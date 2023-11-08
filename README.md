@@ -1,2 +1,2 @@
 # Numpal
- Advanced alculator API
+ Advanced calculator API
