@@ -17,17 +17,33 @@
 namespace pal {
 class Token;
 
-Token parseParenthesisedToken(int&, const std::string &evalInput);
-Token parseDecimalToken(int &itr, const std::string &evalInput);
-Token parseToken(int &itr, const std::string &evalInput);
+Token parseParenthesisedToken(int&, const std::string&);
+Token parseDecimalToken(int&, const std::string&);
+Token parseToken(int&, const std::string&);
 
 void parseWhitespace(int&, const std::string&);
 void checkBounds(int&, const std::string&);
-void check(int &i, const std::string&);
+void check(int&, const std::string&);
+
+class ParenthesiseToken: Token {
+
+	const std::string evalInput;
+
+public:
+	ParenthesiseToken(const std::string evalInput) :
+			evalInput(evalInput) {
+	}
+
+	int evaluate() override {
+
+		return 0;
+	}
+};
 
 class Token {
 
-
+public:
+	virtual int evaluate() = 0;
 
 };
 
@@ -76,6 +92,8 @@ inline Token parseParenthesisedToken(int &itr, const std::string &evalInput) {
 		(evalInput[itr] == ')') ? prths-- : 1;
 	}
 	prthsEndPos = itr;
+
+	ParenthesiseToken
 
 	return Token { };
 }
