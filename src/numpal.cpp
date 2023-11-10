@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -20,6 +21,10 @@ Token parseParenthesisedToken(int&, const std::string &evalInput);
 Token parseDecimalToken(int &itr, const std::string &evalInput);
 Token parseToken(int &itr, const std::string &evalInput);
 
+bool checkAll(int &itr, std::string &evalInput);
+void parseWhiteSpace(int &itr, std::string &evalInput);
+bool checkBounds(int &itr, std::string &evalInput);
+
 struct Token {
 
 };
@@ -27,10 +32,36 @@ struct Token {
 void eval(std::string input) {
 }
 
+// Check all disabilities
+bool check(int &itr, std::string &evalInput) {
+
+	parseWhiteSpace(itr, evalInput);
+	return checkBounds(itr, evalInput);
+}
+
+// Iterate over whitespace.
+void parseWhiteSpace(int &itr, std::string &evalInput) {
+
+	while (evalInput[itr] == ' ' || evalInput[itr] == '\t' || evalInput[itr] == '\n' )
+		itr++;
+}
+
+// Check current position is still within bounds of input string.
+bool checkBounds(int &itr, std::string &evalInput) {
+
+	if (evalInput.length() <= itr)
+		return false;
+	else
+		throw std::runtime_error("Out of bounds.");
+}
+
 //Any number of operator and operand pairs.
 inline Token parseParenthesisedToken(int &itr, const std::string &evalInput) {
+
+	// Capture the location of opening and closing parenthesise.
 	int prths = 1, prthsStartPos = itr, prthsEndPos { };
 
+	// Iterate through all parenthesise to find matching pairs.
 	while (prths) {
 		itr++;
 
