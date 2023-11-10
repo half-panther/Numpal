@@ -17,15 +17,25 @@
 namespace pal {
 class Token;
 
-Token parseParenthesisedToken(int&, const std::string&);
-Token parseDecimalToken(int&, const std::string&);
-Token parseToken(int&, const std::string&);
+Token* parseParenthesisedToken(int&, const std::string&);
+Token* parseDecimalToken(int&, const std::string&);
+Token* parseToken(int&, const std::string&);
 
+int eval(const std::string);
 void parseWhitespace(int&, const std::string&);
 void checkBounds(int&, const std::string&);
 void check(int&, const std::string&);
 
-class ParenthesiseToken: Token {
+class Token {
+
+public:
+	virtual int evaluate() = 0;
+
+	virtual ~Token() {
+	}
+};
+
+class ParenthesiseToken: public Token {
 
 	const std::string evalInput;
 
@@ -34,20 +44,16 @@ public:
 			evalInput(evalInput) {
 	}
 
-	int evaluate() override {
-
-		return 0;
+	virtual int evaluate() override {
+		return eval(evalInput);
+	}
+	virtual ~ParenthesiseToken() {
 	}
 };
 
-class Token {
+int eval(const std::string evalInput) {
 
-public:
-	virtual int evaluate() = 0;
-
-};
-
-void eval(std::string input) {
+	return 1;
 }
 
 // Iterate over whitespace.
@@ -77,11 +83,11 @@ void check(int &itr, const std::string &evalInput) {
 }
 
 //Any number of operator and operand pairs.
-inline Token parseParenthesisedToken(int &itr, const std::string &evalInput) {
+inline Token* parseParenthesisedToken(int &itr, const std::string &evalInput) {
 	check(itr, evalInput);
 
 	// Capture the location of opening and closing parenthesise.
-	int prths = 1, prthsStartPos = itr, prthsEndPos { };
+	int prths = 1, prthsStartPos = itr;
 
 	// Iterate through all parenthesise to find matching pairs.
 	while (prths) {
@@ -91,32 +97,29 @@ inline Token parseParenthesisedToken(int &itr, const std::string &evalInput) {
 		(evalInput[itr] == '(') ? prths++ :
 		(evalInput[itr] == ')') ? prths-- : 1;
 	}
-	prthsEndPos = itr;
-
-	ParenthesiseToken
-
-	return Token { };
+	return new ParenthesiseToken(
+			evalInput.substr(prthsStartPos, itr - prthsStartPos));
 }
 
-inline Token parseToken(int &itr, const std::string &evalInput) {
-	return Token { };
+inline Token* parseToken(int &itr, const std::string &evalInput) {
+	return nullptr;
 }
 
-inline Token parseDecimalToken(int &itr, const std::string &evalInput) {
-	return Token { };
+inline Token* parseDecimalToken(int &itr, const std::string &evalInput) {
+	return nullptr;
 }
 
-inline Token parseOperands(int &itr, const std::string &evalInput) {
-	return Token { };
+inline Token* parseOperands(int &itr, const std::string &evalInput) {
+	return nullptr;
 }
 
-inline Token parseOperator(int &itr, const std::string &evalInput) {
-	return Token { };
+inline Token* parseOperator(int &itr, const std::string &evalInput) {
+	return nullptr;
 }
 
 void parse(std::string evalInput) {
 
-	std::vector<Token> tokens;
+	std::vector<Token*> tokens;
 
 	// Save the position within the evalInput string.
 	int itr { };
@@ -149,4 +152,3 @@ int main() {
 
 	return 0;
 }
-
