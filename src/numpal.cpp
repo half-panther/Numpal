@@ -21,42 +21,48 @@ Token parseParenthesisedToken(int&, const std::string &evalInput);
 Token parseDecimalToken(int &itr, const std::string &evalInput);
 Token parseToken(int &itr, const std::string &evalInput);
 
-bool checkAll(int &itr, std::string &evalInput);
-void parseWhiteSpace(int &itr, std::string &evalInput);
-bool checkBounds(int &itr, std::string &evalInput);
+void parseWhitespace(int&, const std::string&);
+void checkBounds(int&, const std::string&);
+void check(int &i, const std::string&);
 
-struct Token {
+class Token {
+
+
 
 };
 
 void eval(std::string input) {
 }
 
-// Check all disabilities
-bool check(int &itr, std::string &evalInput) {
-
-	parseWhiteSpace(itr, evalInput);
-	return checkBounds(itr, evalInput);
-}
-
 // Iterate over whitespace.
-void parseWhiteSpace(int &itr, std::string &evalInput) {
+void parseWhitespace(int &itr, const std::string &evalInput) {
 
-	while (evalInput[itr] == ' ' || evalInput[itr] == '\t' || evalInput[itr] == '\n' )
+	while (evalInput[itr] == ' ' || evalInput[itr] == '\t'
+			|| evalInput[itr] == '\n') {
+		checkBounds(itr, evalInput);
 		itr++;
+	}
 }
 
 // Check current position is still within bounds of input string.
-bool checkBounds(int &itr, std::string &evalInput) {
+void checkBounds(int &itr, const std::string &evalInput) {
 
-	if (evalInput.length() <= itr)
-		return false;
+	if (evalInput.length() <= (typeof(evalInput.length())) itr)
+		return;
 	else
 		throw std::runtime_error("Out of bounds.");
 }
 
+// Check all possible disabilities at once.
+void check(int &itr, const std::string &evalInput) {
+	parseWhitespace(itr, evalInput);
+	checkBounds(itr, evalInput);
+
+}
+
 //Any number of operator and operand pairs.
 inline Token parseParenthesisedToken(int &itr, const std::string &evalInput) {
+	check(itr, evalInput);
 
 	// Capture the location of opening and closing parenthesise.
 	int prths = 1, prthsStartPos = itr, prthsEndPos { };
@@ -64,6 +70,7 @@ inline Token parseParenthesisedToken(int &itr, const std::string &evalInput) {
 	// Iterate through all parenthesise to find matching pairs.
 	while (prths) {
 		itr++;
+		parseWhitespace(itr, evalInput);
 
 		(evalInput[itr] == '(') ? prths++ :
 		(evalInput[itr] == ')') ? prths-- : 1;
@@ -73,31 +80,43 @@ inline Token parseParenthesisedToken(int &itr, const std::string &evalInput) {
 	return Token { };
 }
 
-inline Token parseDecimalToken(int &itr, const std::string &evalInput) {
-	return Token { };
-}
-
 inline Token parseToken(int &itr, const std::string &evalInput) {
 	return Token { };
 }
 
-void parse(std::string input) {
+inline Token parseDecimalToken(int &itr, const std::string &evalInput) {
+	return Token { };
+}
+
+inline Token parseOperands(int &itr, const std::string &evalInput) {
+	return Token { };
+}
+
+inline Token parseOperator(int &itr, const std::string &evalInput) {
+	return Token { };
+}
+
+void parse(std::string evalInput) {
 
 	std::vector<Token> tokens;
+
+	// Save the position within the evalInput string.
 	int itr { };
 
-	switch (input[0]) {
+	check(itr, evalInput);
+
+	switch (evalInput[0]) {
 
 	case '(':
-		tokens.push_back(parseParenthesisedToken(itr, input));
+		tokens.push_back(parseParenthesisedToken(itr, evalInput));
 		break;
 
 	case '.':
-		tokens.push_back(parseDecimalToken(itr, input));
+		tokens.push_back(parseDecimalToken(itr, evalInput));
 		break;
 
 	case '0' ... '9':
-		tokens.push_back(parseToken(itr, input));
+		tokens.push_back(parseToken(itr, evalInput));
 		break;
 
 	default:
@@ -106,5 +125,10 @@ void parse(std::string input) {
 		//TODO Error - Invalid token
 	}
 }
+}
+
+int main() {
+
+	return 0;
 }
 
